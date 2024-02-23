@@ -4,6 +4,9 @@ on:
   issues:
     types: [labeled]
 
+permissions:
+  issues: write
+
 jobs:
   action:
     if: ${{ !github.event.repository.is_template }}
@@ -12,4 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: ha-ha
+        id: dad-joke
         uses: ./.github/actions/joke-action
+      - name: Add comment to issue
+        run: gh issue comment ${{ github.event.issue.number }} --body "${{ steps.dad-joke.outputs.joke-output }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
